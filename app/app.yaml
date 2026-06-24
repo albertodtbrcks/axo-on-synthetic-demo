@@ -1,0 +1,28 @@
+# Databricks App (Streamlit multipage) — AXO
+# Vistas: Analytics (dashboards embebidos) + Órdenes (escribe a Lakebase Postgres)
+#
+# IMPORTANTE: adjuntar el recurso Lakebase a la app (UI Apps -> Resources -> Database,
+# o vía CLI). Al adjuntarlo, Databricks inyecta PGHOST/PGPORT/PGDATABASE/PGUSER y
+# las credenciales OAuth. LAKEBASE_INSTANCE debe ser el nombre de la instancia Lakebase.
+command: ["streamlit", "run", "Home.py"]
+
+env:
+  - name: DATABRICKS_WAREHOUSE_ID
+    value: "16cb45a2bec93679"
+  - name: WORKSPACE_HOST
+    value: "https://dbc-2123a53c-916e.cloud.databricks.com"
+  - name: WORKSPACE_ORG
+    value: "7474658890723778"
+  - name: DASHBOARD_VENTAS_ID
+    value: "01f16ff532031c0085d628c6f6dd6222"
+  - name: DASHBOARD_CALIDAD_ID
+    value: "01f16ff532851c629c48e87025a4e78a"
+  # --- Lakebase (rellenar al adjuntar el recurso) ---
+  - name: LAKEBASE_INSTANCE
+    value: "PENDIENTE_NOMBRE_INSTANCIA"
+  - name: PGDATABASE
+    value: "databricks_postgres"
+  - name: ORDERS_SCHEMA
+    value: "public"
+  - name: ORDERS_TABLE
+    value: "ordenes_app"
