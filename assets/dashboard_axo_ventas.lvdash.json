@@ -1,0 +1,540 @@
+{
+  "datasets": [
+    {
+      "name": "kpi",
+      "displayName": "KPIs",
+      "queryLines": [
+        "SELECT count(*) ordenes, sum(order_amount) ventas, sum(quantity) unidades, avg(order_amount) ticket FROM workspace.`on`.fact_orders"
+      ]
+    },
+    {
+      "name": "hora",
+      "displayName": "Ventas por hora",
+      "queryLines": [
+        "SELECT date_trunc('HOUR', order_timestamp) hora, sum(order_amount) ventas FROM workspace.`on`.fact_orders WHERE order_timestamp IS NOT NULL GROUP BY 1 ORDER BY 1"
+      ]
+    },
+    {
+      "name": "tienda",
+      "displayName": "Top tiendas",
+      "queryLines": [
+        "SELECT store_name, sum(order_amount) ventas FROM workspace.`on`.fact_orders WHERE store_name IS NOT NULL GROUP BY 1 ORDER BY 2 DESC LIMIT 12"
+      ]
+    },
+    {
+      "name": "cat",
+      "displayName": "Categorias",
+      "queryLines": [
+        "SELECT split(item_category,' > ')[0] AS categoria, sum(order_amount) ventas FROM workspace.`on`.fact_orders WHERE item_category IS NOT NULL AND item_category<>'' GROUP BY 1 ORDER BY 2 DESC LIMIT 10"
+      ]
+    },
+    {
+      "name": "canal",
+      "displayName": "Canal",
+      "queryLines": [
+        "SELECT sales_channel canal, count(*) ordenes FROM workspace.`on`.fact_orders GROUP BY 1"
+      ]
+    },
+    {
+      "name": "pago",
+      "displayName": "Pago",
+      "queryLines": [
+        "SELECT payment_method metodo, count(*) ordenes FROM workspace.`on`.fact_orders WHERE payment_method IS NOT NULL GROUP BY 1 ORDER BY 2 DESC"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "99bea2cd",
+      "displayName": "Ventas",
+      "layout": [
+        {
+          "widget": {
+            "name": "49e4d3d5",
+            "queries": [
+              {
+                "name": "main",
+                "query": {
+                  "datasetName": "kpi",
+                  "fields": [
+                    {
+                      "name": "ventas",
+                      "expression": "SUM(`ventas`)"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "ventas",
+                  "displayName": "Venta total (MXN)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Venta total (MXN)"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "44a05e28",
+            "queries": [
+              {
+                "name": "main",
+                "query": {
+                  "datasetName": "kpi",
+                  "fields": [
+                    {
+                      "name": "ordenes",
+                      "expression": "SUM(`ordenes`)"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "ordenes",
+                  "displayName": "# Órdenes (líneas)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "# Órdenes (líneas)"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 0,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "d87cb8bb",
+            "queries": [
+              {
+                "name": "main",
+                "query": {
+                  "datasetName": "kpi",
+                  "fields": [
+                    {
+                      "name": "unidades",
+                      "expression": "SUM(`unidades`)"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "unidades",
+                  "displayName": "Unidades vendidas"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Unidades vendidas"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "5aab3b59",
+            "queries": [
+              {
+                "name": "main",
+                "query": {
+                  "datasetName": "hora",
+                  "fields": [
+                    {
+                      "name": "hora",
+                      "expression": "`hora`"
+                    },
+                    {
+                      "name": "ventas",
+                      "expression": "SUM(`ventas`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "hora",
+                  "scale": {
+                    "type": "temporal"
+                  },
+                  "displayName": "Hora"
+                },
+                "y": {
+                  "fieldName": "ventas",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Ventas"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Ventas por hora"
+              },
+              "mark": {
+                "colors": [
+                  "#FF3621"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "222e423a",
+            "queries": [
+              {
+                "name": "main",
+                "query": {
+                  "datasetName": "tienda",
+                  "fields": [
+                    {
+                      "name": "store_name",
+                      "expression": "`store_name`"
+                    },
+                    {
+                      "name": "ventas",
+                      "expression": "SUM(`ventas`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "store_name",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  },
+                  "displayName": "store_name"
+                },
+                "y": {
+                  "fieldName": "ventas",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "ventas"
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Top tiendas por venta"
+              },
+              "mark": {
+                "colors": [
+                  "#FF3621",
+                  "#FFAB00",
+                  "#00A972",
+                  "#8BCAE7",
+                  "#AB4057"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 9,
+            "width": 3,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "95cf274f",
+            "queries": [
+              {
+                "name": "main",
+                "query": {
+                  "datasetName": "cat",
+                  "fields": [
+                    {
+                      "name": "categoria",
+                      "expression": "`categoria`"
+                    },
+                    {
+                      "name": "ventas",
+                      "expression": "SUM(`ventas`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "categoria",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  },
+                  "displayName": "categoria"
+                },
+                "y": {
+                  "fieldName": "ventas",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "ventas"
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Top categorías por venta"
+              },
+              "mark": {
+                "colors": [
+                  "#FF3621",
+                  "#FFAB00",
+                  "#00A972",
+                  "#8BCAE7",
+                  "#AB4057"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 9,
+            "width": 3,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "2b9ab5df",
+            "queries": [
+              {
+                "name": "main",
+                "query": {
+                  "datasetName": "canal",
+                  "fields": [
+                    {
+                      "name": "ordenes",
+                      "expression": "SUM(`ordenes`)"
+                    },
+                    {
+                      "name": "canal",
+                      "expression": "`canal`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "ordenes",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "ordenes"
+                },
+                "color": {
+                  "fieldName": "canal",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "canal"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Online vs Offline"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 16,
+            "width": 2,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "1eadda67",
+            "queries": [
+              {
+                "name": "main",
+                "query": {
+                  "datasetName": "pago",
+                  "fields": [
+                    {
+                      "name": "metodo",
+                      "expression": "`metodo`"
+                    },
+                    {
+                      "name": "ordenes",
+                      "expression": "SUM(`ordenes`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "metodo",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  },
+                  "displayName": "metodo"
+                },
+                "y": {
+                  "fieldName": "ordenes",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "ordenes"
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Órdenes por método de pago"
+              },
+              "mark": {
+                "colors": [
+                  "#FF3621",
+                  "#FFAB00",
+                  "#00A972",
+                  "#8BCAE7",
+                  "#AB4057"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 16,
+            "width": 2,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "a5196494",
+            "queries": [
+              {
+                "name": "main",
+                "query": {
+                  "datasetName": "kpi",
+                  "fields": [
+                    {
+                      "name": "ticket",
+                      "expression": "AVG(`ticket`)"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "ticket",
+                  "displayName": "Ticket promedio (MXN)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Ticket promedio (MXN)"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 16,
+            "width": 2,
+            "height": 5
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    }
+  }
+}

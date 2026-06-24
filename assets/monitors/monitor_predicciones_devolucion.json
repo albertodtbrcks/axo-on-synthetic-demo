@@ -1,0 +1,26 @@
+{
+  "assets_dir": "/Users/alberto.ramirez@databricks.com/axo_monitoring",
+  "dashboard_id": "01f16ff7cc3a1fbb9c535e116ce9792a",
+  "drift_metrics_table_name": "workspace.on.predicciones_devolucion_drift_metrics",
+  "inference_log": {
+    "granularities": [
+      "1 hour",
+      "1 day"
+    ],
+    "label_col": "label",
+    "model_id_col": "model_id",
+    "prediction_col": "prediction_label",
+    "problem_type": "PROBLEM_TYPE_CLASSIFICATION",
+    "timestamp_col": "order_ts"
+  },
+  "monitor_version": "1",
+  "output_schema_name": "workspace.on",
+  "profile_metrics_table_name": "workspace.on.predicciones_devolucion_profile_metrics",
+  "schedule": {
+    "pause_status": "UNPAUSED",
+    "quartz_cron_expression": "0 5 * * * ?",
+    "timezone_id": "America/Mexico_City"
+  },
+  "status": "MONITOR_STATUS_ACTIVE",
+  "table_name": "workspace.on.predicciones_devolucion"
+}

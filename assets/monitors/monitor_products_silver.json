@@ -1,0 +1,16 @@
+{
+  "assets_dir": "/Users/alberto.ramirez@databricks.com/axo_monitoring",
+  "dashboard_id": "01f16ff7cbbe1de5a2427ac02bb7302b",
+  "drift_metrics_table_name": "workspace.on.products_silver_drift_metrics",
+  "monitor_version": "1",
+  "output_schema_name": "workspace.on",
+  "profile_metrics_table_name": "workspace.on.products_silver_profile_metrics",
+  "schedule": {
+    "pause_status": "UNPAUSED",
+    "quartz_cron_expression": "0 5 * * * ?",
+    "timezone_id": "America/Mexico_City"
+  },
+  "snapshot": {},
+  "status": "MONITOR_STATUS_ACTIVE",
+  "table_name": "workspace.on.products_silver"
+}

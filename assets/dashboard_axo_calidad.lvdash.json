@@ -1,0 +1,364 @@
+{
+  "datasets": [
+    {
+      "name": "calkpi",
+      "displayName": "Calidad KPI",
+      "queryLines": [
+        "SELECT round(100*avg(case when had_text_issue then 1 else 0 end),1) pct_error, count(*) total, sum(case when had_text_issue then 1 else 0 end) con_error FROM workspace.`on`.orders_silver"
+      ]
+    },
+    {
+      "name": "cuar",
+      "displayName": "Cuarentena",
+      "queryLines": [
+        "SELECT count(*) cuarentena FROM workspace.`on`.products_quarantine"
+      ]
+    },
+    {
+      "name": "tipos",
+      "displayName": "Tipos de error",
+      "queryLines": [
+        "SELECT text_issue_type, count(*) filas FROM workspace.`on`.orders_silver GROUP BY 1 ORDER BY 2 DESC"
+      ]
+    },
+    {
+      "name": "ejemplos",
+      "displayName": "Ejemplos corregidos",
+      "queryLines": [
+        "SELECT text_issue_type AS tipo_error, item_name AS texto_corregido FROM workspace.`on`.orders_silver WHERE text_issue_type<>'limpio' LIMIT 50"
+      ]
+    },
+    {
+      "name": "tipos_hora",
+      "displayName": "Errores por hora",
+      "queryLines": [
+        "SELECT date_trunc('HOUR', order_ts) hora, text_issue_type, count(*) filas FROM workspace.`on`.orders_silver WHERE order_ts IS NOT NULL AND text_issue_type<>'limpio' GROUP BY 1,2 ORDER BY 1"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "bc54f4d6",
+      "displayName": "Calidad",
+      "layout": [
+        {
+          "widget": {
+            "name": "d78a3451",
+            "queries": [
+              {
+                "name": "main",
+                "query": {
+                  "datasetName": "calkpi",
+                  "fields": [
+                    {
+                      "name": "pct_error",
+                      "expression": "SUM(`pct_error`)"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "pct_error",
+                  "displayName": "% líneas con error de texto"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "% líneas con error de texto"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "f028384d",
+            "queries": [
+              {
+                "name": "main",
+                "query": {
+                  "datasetName": "calkpi",
+                  "fields": [
+                    {
+                      "name": "con_error",
+                      "expression": "SUM(`con_error`)"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "con_error",
+                  "displayName": "Líneas con error (corregidas)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Líneas con error (corregidas)"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 0,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "0035a600",
+            "queries": [
+              {
+                "name": "main",
+                "query": {
+                  "datasetName": "calkpi",
+                  "fields": [
+                    {
+                      "name": "total",
+                      "expression": "SUM(`total`)"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "total",
+                  "displayName": "Total líneas procesadas"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Total líneas procesadas"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "c2d43f47",
+            "queries": [
+              {
+                "name": "main",
+                "query": {
+                  "datasetName": "tipos",
+                  "fields": [
+                    {
+                      "name": "text_issue_type",
+                      "expression": "`text_issue_type`"
+                    },
+                    {
+                      "name": "filas",
+                      "expression": "SUM(`filas`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "text_issue_type",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  },
+                  "displayName": "text_issue_type"
+                },
+                "y": {
+                  "fieldName": "filas",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "filas"
+                },
+                "label": {
+                  "show": true
+                },
+                "color": {
+                  "fieldName": "text_issue_type",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "limpio",
+                        "color": "#00A972"
+                      },
+                      {
+                        "value": "mojibake",
+                        "color": "#FF3621"
+                      },
+                      {
+                        "value": "entidad_html",
+                        "color": "#FFAB00"
+                      },
+                      {
+                        "value": "caracter_reemplazo",
+                        "color": "#AB4057"
+                      },
+                      {
+                        "value": "espacios",
+                        "color": "#8BCAE7"
+                      }
+                    ]
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Errores de caracteres detectados/corregidos"
+              },
+              "mark": {
+                "colors": [
+                  "#FF3621",
+                  "#FFAB00",
+                  "#00A972",
+                  "#8BCAE7",
+                  "#AB4057"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 4,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "7375f0ea",
+            "queries": [
+              {
+                "name": "main",
+                "query": {
+                  "datasetName": "cuar",
+                  "fields": [
+                    {
+                      "name": "cuarentena",
+                      "expression": "SUM(`cuarentena`)"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "cuarentena",
+                  "displayName": "Productos en cuarentena"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Productos en cuarentena"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 3,
+            "width": 2,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "dda5754b",
+            "queries": [
+              {
+                "name": "main",
+                "query": {
+                  "datasetName": "ejemplos",
+                  "fields": [
+                    {
+                      "name": "tipo_error",
+                      "expression": "`tipo_error`"
+                    },
+                    {
+                      "name": "texto_corregido",
+                      "expression": "`texto_corregido`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "tipo_error",
+                    "type": "string",
+                    "displayAs": "string",
+                    "title": "tipo_error"
+                  },
+                  {
+                    "fieldName": "texto_corregido",
+                    "type": "string",
+                    "displayAs": "string",
+                    "title": "texto_corregido"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Ejemplos de texto corregido"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 6,
+            "height": 8
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    }
+  }
+}

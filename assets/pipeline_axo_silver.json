@@ -1,0 +1,16 @@
+{
+  "catalog": "workspace",
+  "continuous": false,
+  "development": true,
+  "id": "02a27d28-6981-41d0-a522-06dd308cda90",
+  "libraries": [
+    {
+      "file": {
+        "path": "/Users/alberto.ramirez@databricks.com/axo_on_synthetic/20_pipeline.sql"
+      }
+    }
+  ],
+  "name": "axo_on_silver_pipeline",
+  "schema": "on",
+  "serverless": true
+}

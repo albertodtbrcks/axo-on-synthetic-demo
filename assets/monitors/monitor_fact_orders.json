@@ -1,0 +1,26 @@
+{
+  "assets_dir": "/Users/alberto.ramirez@databricks.com/axo_monitoring",
+  "dashboard_id": "01f16ff7cb4c1cca825db9f74481ba2a",
+  "drift_metrics_table_name": "workspace.on.fact_orders_drift_metrics",
+  "monitor_version": "1",
+  "output_schema_name": "workspace.on",
+  "profile_metrics_table_name": "workspace.on.fact_orders_profile_metrics",
+  "schedule": {
+    "pause_status": "UNPAUSED",
+    "quartz_cron_expression": "0 5 * * * ?",
+    "timezone_id": "America/Mexico_City"
+  },
+  "slicing_exprs": [
+    "sales_channel",
+    "payment_method"
+  ],
+  "status": "MONITOR_STATUS_ACTIVE",
+  "table_name": "workspace.on.fact_orders",
+  "time_series": {
+    "granularities": [
+      "1 hour",
+      "1 day"
+    ],
+    "timestamp_col": "order_timestamp"
+  }
+}

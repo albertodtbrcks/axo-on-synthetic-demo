@@ -1,0 +1,7 @@
+# temporales
+*.tmp
+*.log
+.DS_Store
+scratchpad/
+__pycache__/
+*.pyc

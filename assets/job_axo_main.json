@@ -1,0 +1,80 @@
+{
+  "email_notifications": {},
+  "format": "MULTI_TASK",
+  "max_concurrent_runs": 1,
+  "name": "AXO Main Job",
+  "queue": {
+    "enabled": true
+  },
+  "schedule": {
+    "pause_status": "UNPAUSED",
+    "quartz_cron_expression": "0 0/15 * * * ?",
+    "timezone_id": "America/Mexico_City"
+  },
+  "tags": {
+    "purpose": "synthetic-sales-medallion",
+    "schema": "workspace.on"
+  },
+  "tasks": [
+    {
+      "email_notifications": {},
+      "run_if": "ALL_SUCCESS",
+      "sql_task": {
+        "file": {
+          "path": "/Users/alberto.ramirez@databricks.com/axo_on_synthetic/10_generate.sql",
+          "source": "WORKSPACE"
+        },
+        "warehouse_id": "16cb45a2bec93679"
+      },
+      "task_key": "generar_bronze",
+      "timeout_seconds": 0
+    },
+    {
+      "depends_on": [
+        {
+          "task_key": "generar_bronze"
+        }
+      ],
+      "email_notifications": {},
+      "pipeline_task": {
+        "full_refresh": false,
+        "pipeline_id": "02a27d28-6981-41d0-a522-06dd308cda90"
+      },
+      "run_if": "ALL_SUCCESS",
+      "task_key": "limpiar_pipeline",
+      "timeout_seconds": 0
+    },
+    {
+      "dashboard_task": {
+        "dashboard_id": "01f16ff532031c0085d628c6f6dd6222",
+        "warehouse_id": "16cb45a2bec93679"
+      },
+      "depends_on": [
+        {
+          "task_key": "limpiar_pipeline"
+        }
+      ],
+      "email_notifications": {},
+      "run_if": "ALL_SUCCESS",
+      "task_key": "refrescar_ventas",
+      "timeout_seconds": 0
+    },
+    {
+      "dashboard_task": {
+        "dashboard_id": "01f16ff532851c629c48e87025a4e78a",
+        "warehouse_id": "16cb45a2bec93679"
+      },
+      "depends_on": [
+        {
+          "task_key": "limpiar_pipeline"
+        }
+      ],
+      "email_notifications": {},
+      "run_if": "ALL_SUCCESS",
+      "task_key": "refrescar_calidad",
+      "timeout_seconds": 0
+    }
+  ],
+  "timeout_seconds": 0,
+  "webhook_notifications": {}
+}
