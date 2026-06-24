@@ -5,3 +5,6 @@
 scratchpad/
 __pycache__/
 *.pyc
+
+# Databricks bundle state local
+.databricks/

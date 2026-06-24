@@ -1,17 +1,17 @@
 // CI/CD del bundle AXO (Databricks Asset Bundles) — Jenkins local.
-// Requiere una credencial Jenkins de tipo "Secret text" con id 'databricks-token'
-// (PAT o token de un service principal del workspace AXO).
+// Auth: usa el perfil OAuth `axo-on` cacheado en ~/.databrickscfg del usuario local
+// (Jenkins corre como ese usuario). No requiere PAT (este workspace no permite tokens
+// al usuario). Si se migra a un SP/M2M, cambiar a DATABRICKS_CLIENT_ID/SECRET.
 pipeline {
   agent any
 
   environment {
-    DATABRICKS_HOST         = 'https://dbc-2123a53c-916e.cloud.databricks.com'
-    DATABRICKS_TOKEN        = credentials('databricks-token')
+    DATABRICKS_CONFIG_PROFILE = 'axo-on'
     // Workaround al bug de descarga de Terraform (llave GPG expirada) en el CLI:
-    DATABRICKS_TF_EXEC_PATH = '/opt/homebrew/bin/terraform'
-    DATABRICKS_TF_VERSION   = '1.12.2'
-    // asegurar que databricks/terraform estén en PATH para el agente local
-    PATH                    = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
+    DATABRICKS_TF_EXEC_PATH   = '/opt/homebrew/bin/terraform'
+    DATABRICKS_TF_VERSION     = '1.12.2'
+    // asegurar databricks/terraform en PATH para el agente local
+    PATH                      = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
   }
 
   options {
@@ -40,7 +40,7 @@ pipeline {
       }
     }
 
-    // Deploy a prod solo manual (descomentar/usar un input gate si se desea)
+    // Deploy a prod: manual con gate de aprobación
     // stage('Deploy (prod)') {
     //   when { branch 'main' }
     //   steps {

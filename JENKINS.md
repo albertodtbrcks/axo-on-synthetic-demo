@@ -13,19 +13,27 @@ databricks bundle deploy   -t dev -p axo-on
 databricks bundle summary  -t dev -p axo-on
 ```
 
-## Jenkins local
-1. Iniciar Jenkins: `brew services start jenkins-lts` (UI en http://localhost:8080).
-2. Password inicial: `cat ~/.jenkins/secrets/initialAdminPassword` (o la ruta que indique el log).
-3. Completar el wizard (plugins sugeridos + crear usuario admin).
-4. Crear credencial **Secret text** con id `databricks-token` = PAT o token de service principal del workspace AXO.
-   - PAT rápido: `databricks tokens create --comment jenkins-axo --lifetime-seconds 7776000 -p axo-on`
-5. Crear un job **Pipeline**:
-   - Pipeline → *Pipeline script from SCM* → Git → `https://github.com/albertodtbrcks/axo-on-synthetic-demo`
-   - Branch `*/main`, Script Path `Jenkinsfile`.
-   - (Repo privado → agregar credencial Git de `albertodtbrcks`.)
-6. *Build Now*. El pipeline: Tooling → Validate (dev) → Deploy (dev, solo en `main`).
+## Jenkins local (ya configurado)
+- Jenkins corre en http://localhost:8080 (`brew services start jenkins-lts`).
+- Job **`AXO-Bundle-CICD`** ya creado: Pipeline *from SCM* → repo público
+  `https://github.com/albertodtbrcks/axo-on-synthetic-demo`, branch `main`, `Jenkinsfile`.
+- **Auth:** el Jenkinsfile usa el perfil OAuth `axo-on` de `~/.databrickscfg`
+  (Jenkins corre como el mismo usuario local). **No requiere PAT** — este workspace
+  no permite tokens al usuario. Si el OAuth expira: `databricks auth login ... --profile axo-on`.
+- **Sin credenciales Jenkins necesarias** (repo público + auth por perfil).
+
+Correr: abrir el job `AXO-Bundle-CICD` → **Build Now**.
+Pipeline: Tooling → Validate (dev) → Deploy (dev, solo en `main`).
+
+## Migrar a CI desatendido (opcional, recomendado para prod)
+El perfil OAuth U2M expira. Para CI real, usar un **service principal M2M**:
+crear SP + OAuth secret, y en el Jenkinsfile usar `DATABRICKS_CLIENT_ID` /
+`DATABRICKS_CLIENT_SECRET` (credenciales Jenkins) en vez del perfil.
+(Requiere permisos de admin para crear el SP.)
 
 ## Notas
 - El agente local debe tener `databricks` y `terraform` en PATH (`/opt/homebrew/bin`).
 - `dev` usa `mode: development` (schedules en pausa, recursos prefijados por usuario) → seguro para CI.
-- `prod` queda como deploy manual.
+- App y dashboards se administran **fuera del bundle** (ver `resources-manual/`): la app ya existe
+  y los dashboards tienen un bug de path en esta versión del CLI. El bundle gestiona pipeline + jobs.
+- `prod` queda como deploy manual (gate en el Jenkinsfile, comentado).

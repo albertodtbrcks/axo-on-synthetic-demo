@@ -24,16 +24,17 @@ resources:
             pipeline_id: ${resources.pipelines.axo_silver_pipeline.id}
             full_refresh: false
 
+        # dashboards administrados fuera del bundle (ya existen) -> IDs fijos
         - task_key: refrescar_ventas
           depends_on:
             - task_key: limpiar_pipeline
           dashboard_task:
-            dashboard_id: ${resources.dashboards.axo_ventas.id}
+            dashboard_id: "01f16ff532031c0085d628c6f6dd6222"
             warehouse_id: ${var.warehouse_id}
 
         - task_key: refrescar_calidad
           depends_on:
             - task_key: limpiar_pipeline
           dashboard_task:
-            dashboard_id: ${resources.dashboards.axo_calidad.id}
+            dashboard_id: "01f16ff532851c629c48e87025a4e78a"
             warehouse_id: ${var.warehouse_id}
