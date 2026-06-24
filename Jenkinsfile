@@ -33,7 +33,10 @@ pipeline {
     }
 
     stage('Deploy (dev)') {
-      when { branch 'main' }
+      // En jobs Pipeline-from-SCM (una rama) BRANCH_NAME no se setea; usamos GIT_BRANCH.
+      when {
+        expression { (env.GIT_BRANCH ?: '').endsWith('/main') || env.GIT_BRANCH == 'main' }
+      }
       steps {
         sh 'databricks bundle deploy -t dev'
         sh 'databricks bundle summary -t dev || true'
