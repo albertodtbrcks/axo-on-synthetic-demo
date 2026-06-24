@@ -37,3 +37,11 @@ crear SP + OAuth secret, y en el Jenkinsfile usar `DATABRICKS_CLIENT_ID` /
 - App y dashboards se administran **fuera del bundle** (ver `resources-manual/`): la app ya existe
   y los dashboards tienen un bug de path en esta versión del CLI. El bundle gestiona pipeline + jobs.
 - `prod` queda como deploy manual (gate en el Jenkinsfile, comentado).
+
+## Disparo automático (local, sin túnel)
+- El job usa **SCM Polling** (`H/2 * * * *`, ~cada 2 min): Jenkins consulta GitHub
+  (tráfico saliente, funciona en localhost sin exponer nada) y construye cuando `main` avanza.
+- Un **webhook real** (push instantáneo) requeriría exponer Jenkins con un túnel
+  (cloudflared/ngrok) porque GitHub no alcanza `localhost`. Para Jenkins local, polling es lo estándar.
+- Si en el futuro Jenkins queda en un host público, cambiar el trigger a
+  "GitHub hook trigger for GITScm polling" + webhook `<host>/github-webhook/`.
