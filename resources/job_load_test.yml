@@ -1,0 +1,21 @@
+resources:
+  jobs:
+    axo_warehouse_load_test:
+      name: "axo_warehouse_load_test"
+      tags:
+        purpose: warehouse-autoscale-test
+      max_concurrent_runs: 1
+      tasks:
+        # 24 queries pesadas concurrentes (for_each) -> encola -> levanta 2do cluster
+        - task_key: carga_concurrente
+          for_each_task:
+            inputs: '["01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24"]'
+            concurrency: 24
+            task:
+              task_key: load_iter
+              sql_task:
+                warehouse_id: ${var.warehouse_id}
+                file:
+                  path: ../30_load_test.sql
+                parameters:
+                  salt: "{{input}}"

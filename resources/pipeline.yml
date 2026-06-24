@@ -1,0 +1,12 @@
+resources:
+  pipelines:
+    axo_silver_pipeline:
+      name: axo_on_silver_pipeline
+      catalog: ${var.catalog}
+      schema: ${var.schema}
+      serverless: true
+      continuous: false
+      development: true
+      libraries:
+        - file:
+            path: ../20_pipeline.sql

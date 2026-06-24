@@ -1,0 +1,39 @@
+resources:
+  jobs:
+    axo_main_job:
+      name: "AXO Main Job"
+      tags:
+        purpose: synthetic-sales-medallion
+        schema: workspace.on
+      schedule:
+        quartz_cron_expression: "0 0/15 * * * ?"
+        timezone_id: America/Mexico_City
+        # en target dev las schedules quedan en PAUSE automáticamente
+      max_concurrent_runs: 1
+      tasks:
+        - task_key: generar_bronze
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../10_generate.sql
+
+        - task_key: limpiar_pipeline
+          depends_on:
+            - task_key: generar_bronze
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.axo_silver_pipeline.id}
+            full_refresh: false
+
+        - task_key: refrescar_ventas
+          depends_on:
+            - task_key: limpiar_pipeline
+          dashboard_task:
+            dashboard_id: ${resources.dashboards.axo_ventas.id}
+            warehouse_id: ${var.warehouse_id}
+
+        - task_key: refrescar_calidad
+          depends_on:
+            - task_key: limpiar_pipeline
+          dashboard_task:
+            dashboard_id: ${resources.dashboards.axo_calidad.id}
+            warehouse_id: ${var.warehouse_id}

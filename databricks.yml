@@ -1,0 +1,32 @@
+# Databricks Asset Bundle — AXO demo (workspace.on)
+# Recursos: pipeline (silver/gold), AXO Main Job (generar->limpiar->dashboards),
+# job de carga, dashboards Lakeview y la app Streamlit.
+bundle:
+  name: axo-on-synthetic
+
+variables:
+  warehouse_id:
+    description: SQL warehouse (Serverless BI Medium) para SQL tasks y dashboards
+    default: "16cb45a2bec93679"
+  catalog:
+    default: workspace
+  schema:
+    default: "on"
+
+include:
+  - resources/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://dbc-2123a53c-916e.cloud.databricks.com
+
+  prod:
+    mode: production
+    workspace:
+      host: https://dbc-2123a53c-916e.cloud.databricks.com
+      root_path: /Workspace/Users/alberto.ramirez@databricks.com/.bundle/${bundle.name}/${bundle.target}
+    run_as:
+      user_name: alberto.ramirez@databricks.com

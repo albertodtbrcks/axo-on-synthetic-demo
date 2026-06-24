@@ -1,0 +1,11 @@
+resources:
+  dashboards:
+    axo_ventas:
+      display_name: "AXO Ventas"
+      file_path: ../assets/dashboard_axo_ventas.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+
+    axo_calidad:
+      display_name: "AXO Calidad de Datos"
+      file_path: ../assets/dashboard_axo_calidad.lvdash.json
+      warehouse_id: ${var.warehouse_id}
