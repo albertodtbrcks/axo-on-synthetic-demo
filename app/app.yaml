@@ -19,7 +19,7 @@ env:
     value: "01f16ff532851c629c48e87025a4e78a"
   # --- Lakebase (rellenar al adjuntar el recurso) ---
   - name: LAKEBASE_INSTANCE
-    value: "PENDIENTE_NOMBRE_INSTANCIA"
+    value: "axo-orders-db"
   - name: PGDATABASE
     value: "databricks_postgres"
   - name: ORDERS_SCHEMA
