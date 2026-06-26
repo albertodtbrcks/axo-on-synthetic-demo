@@ -43,6 +43,17 @@ pipeline {
       }
     }
 
+    stage('Sync monitor schedules') {
+      // El CLI no propaga el schedule del quality_monitor vía bundle; lo aplica este script
+      // leyendo monitor_schedule.cron (single source). Solo en main.
+      when {
+        expression { (env.GIT_BRANCH ?: '').endsWith('/main') || env.GIT_BRANCH == 'main' }
+      }
+      steps {
+        sh 'python3 scripts/sync_monitors.py'
+      }
+    }
+
     // Deploy a prod: manual con gate de aprobación
     // stage('Deploy (prod)') {
     //   when { branch 'main' }

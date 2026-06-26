@@ -8,7 +8,8 @@ resources:
       schedule:
         quartz_cron_expression: "0 0/15 * * * ?"
         timezone_id: America/Mexico_City
-        # en target dev las schedules quedan en PAUSE automáticamente
+        # PAUSADO: la generación real la corre el job manual; esta copia del bundle no duplica.
+        pause_status: PAUSED
       max_concurrent_runs: 1
       tasks:
         - task_key: generar_bronze

@@ -4,9 +4,6 @@ resources:
       table_name: ${var.catalog}.${var.schema}.fact_orders
       assets_dir: /Users/alberto.ramirez@databricks.com/axo_monitoring/fact_orders
       output_schema_name: ${var.catalog}.${var.schema}
-      schedule:
-        quartz_cron_expression: "0 5 * * * ?"   # cada hora
-        timezone_id: America/Mexico_City
       time_series:
         timestamp_col: order_timestamp
         granularities:
@@ -20,18 +17,12 @@ resources:
       table_name: ${var.catalog}.${var.schema}.products_silver
       assets_dir: /Users/alberto.ramirez@databricks.com/axo_monitoring/products_silver
       output_schema_name: ${var.catalog}.${var.schema}
-      schedule:
-        quartz_cron_expression: "0 5 * * * ?"   # cada hora
-        timezone_id: America/Mexico_City
       snapshot: {}
 
     mon_predicciones_devolucion:
       table_name: ${var.catalog}.${var.schema}.predicciones_devolucion
       assets_dir: /Users/alberto.ramirez@databricks.com/axo_monitoring/predicciones
       output_schema_name: ${var.catalog}.${var.schema}
-      schedule:
-        quartz_cron_expression: "0 5 * * * ?"   # cada hora
-        timezone_id: America/Mexico_City
       inference_log:
         timestamp_col: order_ts
         granularities:
