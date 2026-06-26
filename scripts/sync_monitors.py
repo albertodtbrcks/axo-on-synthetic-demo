@@ -28,20 +28,21 @@ def cli(*args):
 
 def main():
     cron = open(os.path.join(HERE, "monitor_schedule.cron")).read().strip()
-    print(f"Aplicando schedule '{cron}' ({TZ}) a {len(TABLES)} monitores")
+    paused = cron.upper() == "PAUSED" or cron == ""
+    if paused:
+        print(f"PAUSANDO monitoring (sin schedule) en {len(TABLES)} monitores")
+    else:
+        print(f"Aplicando schedule '{cron}' ({TZ}) a {len(TABLES)} monitores")
     for table in TABLES:
         g = cli("quality-monitors", "get", table)
         if g.returncode != 0:
             print(f"  ! {table}: no se pudo leer ({g.stderr.strip()[:120]})")
             sys.exit(1)
         m = json.loads(g.stdout)
-        body = {
-            "output_schema_name": m["output_schema_name"],
-            "schedule": {
-                "quartz_cron_expression": cron,
-                "timezone_id": TZ,
-            },
-        }
+        body = {"output_schema_name": m["output_schema_name"]}
+        # Sin clave 'schedule' = pausado (no refresh automático).
+        if not paused:
+            body["schedule"] = {"quartz_cron_expression": cron, "timezone_id": TZ}
         for k in ("time_series", "snapshot", "inference_log"):
             if k in m:
                 body[k] = m[k]
@@ -51,7 +52,7 @@ def main():
         if u.returncode != 0:
             print(f"  ! {table}: update falló ({u.stderr.strip()[:160]})")
             sys.exit(1)
-        print(f"  ✓ {table} -> {cron}")
+        print(f"  ✓ {table} -> {'PAUSED' if paused else cron}")
 
 
 if __name__ == "__main__":
