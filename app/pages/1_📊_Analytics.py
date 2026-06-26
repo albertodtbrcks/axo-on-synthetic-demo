@@ -27,7 +27,9 @@ if not token:
 
 @st.cache_resource
 def _client(tok):
-    return WorkspaceClient(host=HOST, token=tok)
+    # auth_type="pat" fuerza usar SOLO el token del usuario (OBO) e ignora el
+    # OAuth del Service Principal que Apps inyecta como env (DATABRICKS_CLIENT_ID/SECRET).
+    return WorkspaceClient(host=HOST, token=tok, auth_type="pat")
 
 
 @st.cache_data(ttl=300)
