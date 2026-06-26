@@ -1,4 +1,5 @@
 streamlit>=1.40
 databricks-sdk>=0.39
+databricks-sql-connector>=3.0
 psycopg[binary]>=3.2
 pandas>=2.0

@@ -6,6 +6,10 @@
 # las credenciales OAuth. LAKEBASE_INSTANCE debe ser el nombre de la instancia Lakebase.
 command: ["streamlit", "run", "Home.py"]
 
+# On-behalf-of-user: la app consulta el warehouse con el token del usuario que la abre.
+user_api_scopes:
+  - sql
+
 env:
   - name: DATABRICKS_WAREHOUSE_ID
     value: "16cb45a2bec93679"
